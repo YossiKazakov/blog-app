@@ -21,7 +21,6 @@ function Home({ // Child of App.js
   // })
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
-  const [currentPostIdToAddTagTo, setCurrentPostIdToAddTagTo] = useState(null)
 
   ///////////////////////////////////// handle query param /////////////////////////////////////
   searchParams.get('popularity');
@@ -33,23 +32,19 @@ function Home({ // Child of App.js
   }, [selectedPopularityQuery, setSearchParams]);
 
   ///////////////////////////////////// handle tag on post /////////////////////////////////////
-  const handleAddTagClick = (event, selectedPostId) => {
-    console.log(`+ sign (add tag) clicked on post ${selectedPostId}`);
+  const handleAddTagClick = (event, selectedPostId) => { // Goes to Post.js
+    // console.log(`+ sign (add tag) clicked on post ${selectedPostId}`); 
     setAnchorEl(event.currentTarget); // Scroll down menu bar
-    setCurrentPostIdToAddTagTo(selectedPostId)
   };
 
-  const handleMenuClose = (selectedOption) => {
-    setAnchorEl(null);
-    console.log(`the chosen tag is ${selectedOption}`);
-    // Need to do a post req to Tags and add the Tag : 
-    // "selectedOption : {selectedPostId : true}"
-    const newTag = selectedOption
-    const onPost = currentPostIdToAddTagTo
-    if (newTag) {
-      handleAddTagOnPost(newTag, onPost)
+
+  const handleMenuClose = (selectedOption) => { // Goes to FloatingMenu.js
+    if (!selectedOption) return
+    if (isNaN(Number(selectedOption))) { // Case where it is the Tag menu
+      const postId = anchorEl.getAttribute('data-testid').split('postAddTagBtn-')[1]
+      handleAddTagOnPost(selectedOption, postId)
     }
-    setCurrentPostIdToAddTagTo(null)
+    setAnchorEl(null);
   };
 
   ///////////////////////////////////// handle filter tag /////////////////////////////////////

@@ -21,6 +21,11 @@ import RecommendIcon from '@mui/icons-material/Recommend';
 import HomeIcon from '@mui/icons-material/Home';
 
 function App() {
+
+  useEffect(() => {
+    console.log("App.js render");
+  })
+
   const baseURL = 'http://localhost:3080';
   const popularityOptions = [1, 2, 4, 10, 20];
 
@@ -174,9 +179,16 @@ function App() {
 
   // Handles the adding of a tag to some post, will be passed to Home component
   const addTagOnPost = (tagName, postId) => {
+    if (tags[tagName][postId]) {
+      console.log(`${tagName} tag is already on post id ${postId}`)
+      return
+    }
     axios
       .post(`${baseURL}/tags/tagName/${tagName}/${postId}`)
       .then((response) => {
+        const updatedTags = { ...tags }
+        updatedTags[tagName][postId] = true
+        setTags(updatedTags)
         console.log(response.data.message);
       })
       .catch((error) => {

@@ -26,33 +26,5 @@ const Posts = [
         usersLikeOrDislike: {}
     }
 ];
-// const Posts = [
-//     {
-//         "11": {
-//             title: 'Example Title 1',
-//             content: 'Example content 1',
-//             userId: "11",
-//             likes: 0,
-//             dislikes: 0
-//         }
-//     },
-//     {
-//         "12": {
-//             title: 'Example Title 1',
-//             content: 'Example content 2',
-//             userId: "11",
-//             likes: 0,
-//             dislikes: 0
-//         }
-//     },
-//     {
-//         "13": {
-//             title: 'Example Title 1',
-//             content: 'Example content 3',
-//             userId: "11",
-//             likes: 0,
-//             dislikes: 0
-//         }
-//     }
-// ]
+
 module.exports = { Posts };

@@ -1,12 +1,11 @@
 import { MenuItem, Menu } from '@mui/material';
 
 function FloatingMenu({ menuOptions, anchorElement, handleMenuClose }) {
-  const open = Boolean(anchorElement);
+  const open = Boolean(anchorElement); // false if null(no anchor), true otherwise
 
   const handleClose = (selectedOption, optionId) => {
     const option = menuOptions.includes(selectedOption) ? selectedOption : '';
-    handleMenuClose(option);
-    console.log(`handleClose option id -  ${optionId}, option -  ${option}`);
+    handleMenuClose(option)
   };
 
   return (
@@ -14,7 +13,7 @@ function FloatingMenu({ menuOptions, anchorElement, handleMenuClose }) {
       id='positioned-menu'
       data-testid='positioned-menu'
       aria-labelledby='positioned-button'
-      anchorEl={anchorElement}
+      anchorEl={anchorElement} // Where the menu will appear
       open={open}
       onClose={handleClose}
       anchorOrigin={{
