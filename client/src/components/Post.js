@@ -20,6 +20,8 @@ function Post({ // Child of Home.js
   postTitle,
   postContent,
   postUsersLikeOrDislike,
+  postLikesAmount,
+  postDislikesAmount,
   isAddTagBtn,
   handleAddTagClick,
   handleTagClick,
@@ -29,11 +31,6 @@ function Post({ // Child of Home.js
   userId,
   handleUpdateLikesAndDislikes // Line 179 App.js
 }) {
-
-  // useEffect(() => {
-  //   console.log(`${postId} re-rendered`);
-  // })
-
   const [, dummyState] = useState()
   const forceReRender = () => {
     dummyState({})
@@ -49,9 +46,6 @@ function Post({ // Child of Home.js
   };
   const tagsNameArr = getTagsByPostId(postId);
   const isTag = tagsNameArr.length > 0 ? true : false;
-
-  // const calculateLikesAndDislikes
-
 
   return (
     <ListItem
@@ -123,7 +117,7 @@ function Post({ // Child of Home.js
             data-testid={`postDislikeNum-${postId}`}
             color='red'
           >
-            {0}
+            {postDislikesAmount}
           </Typography>
           <IconButton
             aria-label='like'
@@ -148,7 +142,7 @@ function Post({ // Child of Home.js
             data-testid={`postLikeNum-${postId}`}
             color='green'
           >
-            {0}
+            {postLikesAmount}
           </Typography>
         </CardActions>
       </Card>

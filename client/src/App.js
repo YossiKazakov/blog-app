@@ -21,11 +21,6 @@ import RecommendIcon from '@mui/icons-material/Recommend';
 import HomeIcon from '@mui/icons-material/Home';
 
 function App() {
-
-  useEffect(() => {
-    console.log("App.js re-rendered");
-  })
-
   const baseURL = 'http://localhost:3080';
   const popularityOptions = [1, 2, 4, 10, 20];
 
@@ -82,8 +77,15 @@ function App() {
     axios
       .get(`${baseURL}/posts`)
       .then((response) => {
-        setAllPosts([...response.data['Posts']]);
-        setFilteredPosts([...response.data['Posts']]);
+        const posts = [...response.data['Posts']].map(post => {
+          const { likesCounter, dislikesCounter } = calculateLikesAndDislikesAmount(post.usersLikeOrDislike)
+          post.likes = likesCounter
+          post.dislikes = dislikesCounter
+          // console.log(`(get)${post.id} has ${likesCounter} likes and ${dislikesCounter} dislikes`);
+          return post
+        })
+        setAllPosts(posts);
+        setFilteredPosts(posts);
       })
       .catch((error) => {
         handleAlert(error.message, true, 'error');
@@ -202,21 +204,40 @@ function App() {
           },
         }
       )
-      .then((response) => { 
+      .then((response) => {
         // Local client state update
         const { userId, status } = response.data
-        const updatedPosts = allPosts.map(post => {
+        const updatedPosts = filteredPosts.map(post => {
           if (post.id === postId) {
             post.usersLikeOrDislike[userId] = status
+            const { likesCounter, dislikesCounter } = calculateLikesAndDislikesAmount(post.usersLikeOrDislike)
+            post.likes = likesCounter
+            post.dislikes = dislikesCounter
+            console.log(`(post)${post.id} has ${likesCounter} likes and ${dislikesCounter} dislikes`);
           }
           return post
         })
-        setAllPosts(updatedPosts)
+        setFilteredPosts(updatedPosts)
+        // setFilteredPosts(updatedPosts)
         console.log(`post number ${postId} is now ${status + 'd'} by user ${userId}`);
       })
       .catch(err => console.log);
   }
-  
+
+  const calculateLikesAndDislikesAmount = (usersLikeOrDislikeObj) => {
+    let likesCounter = 0
+    let dislikesCounter = 0
+    Object.values(usersLikeOrDislikeObj).forEach(status => {
+      if (status === 'like') {
+        likesCounter++
+      }
+      if (status === 'dislike') {
+        dislikesCounter++
+      }
+    })
+    return { likesCounter, dislikesCounter }
+  }
+
 
   ///////////////////////////////////// handle click events /////////////////////////////////////
   const handlePopularityClick = (event) => {

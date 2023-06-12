@@ -17,7 +17,7 @@ function Home({ // Child of App.js
   handleUpdateLikesAndDislikes // Drilling to Post.js
 }) {
   // useEffect(() => {
-  //   console.log("Home re-rendered");
+  //   console.log(Posts);
   // })
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -68,6 +68,8 @@ function Home({ // Child of App.js
                 postTitle={post.title}
                 postContent={post.content}
                 postUsersLikeOrDislike={post.usersLikeOrDislike}
+                postLikesAmount={post.likes}
+                postDislikesAmount={post.dislikes}
                 isAddTagBtn={true}
                 handleAddTagClick={handleAddTagClick} // Gets from App.js
                 handleTagClick={handleTagClick}
