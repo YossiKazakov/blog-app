@@ -7,21 +7,21 @@ import { useSearchParams } from 'react-router-dom';
 
 function Home({ // Child of App.js
   Posts,
-  Tags,
-  tagsList,
-  handleAddNewTag, 
+  Tags, // Drilling to Post.js
+  tagsList, // Drilling to TagCloud and FloatingMenu.js
+  handleAddNewTag, // Drilling to TagCloud.js
   handleAddTagOnPost,
-  selectedTagId,
+  selectedTagId, // Drilling to Post.js and TagCloud.js
   selectedPopularityQuery,
-  userId,
-  handleUpdateLikesAndDislikes
+  userId, // Drilling to Post.js
+  handleUpdateLikesAndDislikes // Drilling to Post.js
 }) {
+  // useEffect(() => {
+  //   console.log("Home re-rendered");
+  // })
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
   const [currentPostIdToAddTagTo, setCurrentPostIdToAddTagTo] = useState(null)
-  useEffect(() => {
-    console.log("Home re-rendered");
-  })
 
   ///////////////////////////////////// handle query param /////////////////////////////////////
   searchParams.get('popularity');
@@ -67,6 +67,7 @@ function Home({ // Child of App.js
                 postId={post.id}
                 postTitle={post.title}
                 postContent={post.content}
+                postUsersLikeOrDislike={post.usersLikeOrDislike}
                 isAddTagBtn={true}
                 handleAddTagClick={handleAddTagClick} // Gets from App.js
                 handleTagClick={handleTagClick}
@@ -74,8 +75,6 @@ function Home({ // Child of App.js
                 isTagDisabled={false}
                 Tags={Tags}
                 userId={userId}
-                likes={post.likes}
-                dislikes={post.dislikes}
                 handleUpdateLikesAndDislikes={handleUpdateLikesAndDislikes}
               />
             );

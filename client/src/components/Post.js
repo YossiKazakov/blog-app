@@ -19,6 +19,7 @@ function Post({ // Child of Home.js
   postId,
   postTitle,
   postContent,
+  postUsersLikeOrDislike,
   isAddTagBtn,
   handleAddTagClick,
   handleTagClick,
@@ -26,10 +27,13 @@ function Post({ // Child of Home.js
   isTagDisabled,
   Tags,
   userId,
-  likes,
-  dislikes,
-  handleUpdateLikesAndDislikes
+  handleUpdateLikesAndDislikes // Line 179 App.js
 }) {
+
+  // useEffect(() => {
+  //   console.log(`${postId} re-rendered`);
+  // })
+
   const [, dummyState] = useState()
   const forceReRender = () => {
     dummyState({})
@@ -46,43 +50,7 @@ function Post({ // Child of Home.js
   const tagsNameArr = getTagsByPostId(postId);
   const isTag = tagsNameArr.length > 0 ? true : false;
 
-  const [didUserLikePost, setDidUserLikePost] = useState(false);
-  const [didUserDislikePost, setDidUserDislikePost] = useState(false);
-  const [userToLikesObject, setUserToLikesObject] = useState({})
-  const [likesAndDislikes, setLikesAndDislikes] = useState([likes, dislikes])
-
-
-  const handleLikeAndDislike = (action) => {
-    if (action === "like") {
-      setDidUserLikePost(true)
-      setDidUserDislikePost(false)
-      setUserToLikesObject({ ...userToLikesObject, [userId]: true })
-    }
-
-    if (action === "dislike") {
-      setDidUserLikePost(false)
-      setDidUserDislikePost(true)
-      setUserToLikesObject({ ...userToLikesObject, [userId]: false })
-    }
-  }
-
-  useEffect(() => {
-    const countLikesAndDislikes = () => {
-      let likeCounter = 0
-      let dislikeCounter = 0
-      Object.entries(userToLikesObject).forEach(([id, like]) => {
-        like ? likeCounter++ : dislikeCounter++
-      })
-      // console.log(likeCounter, dislikeCounter)
-      return [likeCounter, dislikeCounter]
-    }
-    setLikesAndDislikes(countLikesAndDislikes())
-  }, [userToLikesObject])
-
-  useEffect(() => {
-    const [likes, dislikes] = likesAndDislikes
-    handleUpdateLikesAndDislikes(postId, likes, dislikes)
-  }, [userToLikesObject, handleUpdateLikesAndDislikes, likesAndDislikes, postId])
+  // const calculateLikesAndDislikes
 
 
   return (
@@ -136,9 +104,9 @@ function Post({ // Child of Home.js
             aria-label='dislike'
             size='small'
             data-testid={`postDislikeBtn-${postId}`}
-            onClick={() => handleLikeAndDislike("dislike")}
+            onClick={() => handleUpdateLikesAndDislikes(postId, 'dislike')}
           >
-            {didUserDislikePost ? (
+            {postUsersLikeOrDislike[userId] === 'dislike' ? (
               <ThumbDownAltIcon
                 color='error'
                 data-testid={`fullDislikeIcon-${postId}`}
@@ -155,15 +123,15 @@ function Post({ // Child of Home.js
             data-testid={`postDislikeNum-${postId}`}
             color='red'
           >
-            {likesAndDislikes[1]}
+            {0}
           </Typography>
           <IconButton
             aria-label='like'
             size='small'
             data-testid={`postLikeBtn-${postId}`}
-            onClick={() => handleLikeAndDislike("like")}
+            onClick={() => handleUpdateLikesAndDislikes(postId, 'like')}
           >
-            {didUserLikePost ? (
+            {postUsersLikeOrDislike[userId] === 'like' ? (
               <ThumbUpAltIcon
                 color='success'
                 data-testid={`fullLikeIcon-${postId}`}
@@ -180,7 +148,7 @@ function Post({ // Child of Home.js
             data-testid={`postLikeNum-${postId}`}
             color='green'
           >
-            {likesAndDislikes[0]}
+            {0}
           </Typography>
         </CardActions>
       </Card>

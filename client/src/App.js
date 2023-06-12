@@ -21,6 +21,11 @@ import RecommendIcon from '@mui/icons-material/Recommend';
 import HomeIcon from '@mui/icons-material/Home';
 
 function App() {
+
+  useEffect(() => {
+    console.log("App.js re-rendered");
+  })
+
   const baseURL = 'http://localhost:3080';
   const popularityOptions = [1, 2, 4, 10, 20];
 
@@ -123,7 +128,7 @@ function App() {
     // TODO - add the recommended-posts-for-me functionality here
   };
 
-  ///////////////////// post req /////////////////////
+  ///////////////////// ADDING POST /////////////////////
   const addPost = (id, title, content, selectedTag) => {
     axios
       .post(
@@ -147,6 +152,7 @@ function App() {
       });
   };
 
+  ///////////////////// TAGS MANAGMENT /////////////////////
   const addNewTag = (tagName) => {
     axios
       .post(`${baseURL}/tags/tagName/${tagName}`)
@@ -164,7 +170,7 @@ function App() {
       });
   };
 
-  //Handles the adding of a tag to some post, will be passed to Home component
+  // Handles the adding of a tag to some post, will be passed to Home component
   const addTagOnPost = (tagName, postId) => {
     axios
       .post(`${baseURL}/tags/tagName/${tagName}/${postId}`)
@@ -176,16 +182,18 @@ function App() {
       });
   }
 
-  const handleUpdateLikesAndDislikes = useCallback((id, likes, dislikes) => {
+  ///////////////////// LIKES MANAGMENT /////////////////////
+
+  // Sends a post request with postId, userId (via cookie) and status ('like'/'dislike')
+  // to the server and updates the specific post.usersLikeOrDislike with a (maybe fresh new) key of userId
+  // and the value of status
+  const handleUpdateLikesAndDislikes = (postId, status) => {
     axios
       .post(
-        `${baseURL}/posts/${id}`,
+        `${baseURL}/posts/${postId}`,
         {
-          post: {
-            id,
-            likes,
-            dislikes,
-          }
+          userId,
+          status
         },
         {
           headers: {
@@ -194,14 +202,21 @@ function App() {
           },
         }
       )
-      .then((response) => {
-        console.log(response.data.newState);
+      .then((response) => { 
+        // Local client state update
+        const { userId, status } = response.data
+        const updatedPosts = allPosts.map(post => {
+          if (post.id === postId) {
+            post.usersLikeOrDislike[userId] = status
+          }
+          return post
+        })
+        setAllPosts(updatedPosts)
+        console.log(`post number ${postId} is now ${status + 'd'} by user ${userId}`);
       })
       .catch(err => console.log);
-
-
-  }, [])
-
+  }
+  
 
   ///////////////////////////////////// handle click events /////////////////////////////////////
   const handlePopularityClick = (event) => {

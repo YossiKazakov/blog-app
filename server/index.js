@@ -43,6 +43,7 @@ app.get('/posts', cors(corsOptions), (req, res) => {
   res.send({ Posts });
 });
 
+// New Post submission
 app.post('/posts', cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
   if (!userId) {
@@ -56,33 +57,34 @@ app.post('/posts', cors(corsOptions), (req, res) => {
     res.status(400).end();
     return;
   }
-  const newPost = { id, title, content, userId, likes: 0, dislikes: 0 }
+  const newPost = { id, title, content, userId, usersLikeOrDislike: {} }
   Posts.push(newPost)
   res.send({ newPost }).status(200).end();
 
 });
 
-app.post('/posts/:id', cors(corsOptions), (req, res) => {
+// Updates the given postId likeness status localy on the server
+app.post('/posts/:postId', cors(corsOptions), (req, res) => {
   const userId = req.cookies?.userId;
   if (!userId) {
     res.status(403).end();
     return;
   }
-  const { id } = req.params
-  const { likes, dislikes } = req.body.post
 
-  if (!id) {
-    res.status(400).end("no id provided");
+  const { postId } = req.params
+  const { status } = req.body
+
+
+  if (!postId) {
+    res.status(400).end("no post id provided");
     return;
   }
 
-  const index = Posts.findIndex((post) => post.id === id)
-  Posts[index].likes = likes
-  Posts[index].dislikes = dislikes
-  const newState = { likes: Posts[index].likes, dislikes: Posts[index].dislikes }
-  // console.log(Posts);
+  // Server Posts state update
+  const index = Posts.findIndex((post) => post.id === postId)
+  Posts[index].usersLikeOrDislike[userId] = status
 
-  res.send({ newState }).status(200).end();
+  res.send({ userId, status }).status(200).end();
 
 });
 
