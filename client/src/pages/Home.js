@@ -13,6 +13,8 @@ function Home({ // Child of App.js
   handleAddTagOnPost,
   selectedTagId, // Drilling to Post.js and TagCloud.js
   selectedPopularityQuery,
+  selectedTagQuery,
+  filterPostsByTag,
   userId, // Drilling to Post.js
   handleUpdateLikesAndDislikes // Drilling to Post.js
 }) {
@@ -23,13 +25,18 @@ function Home({ // Child of App.js
   const [anchorEl, setAnchorEl] = useState(null);
 
   ///////////////////////////////////// handle query param /////////////////////////////////////
-  searchParams.get('popularity');
+  searchParams.get('popularity'); // Why needed?
 
   useEffect(() => {
-    if (selectedPopularityQuery !== '') {
-      setSearchParams({ popularity: `${selectedPopularityQuery}` }); // sets the url
+    const updateQueryParams = () => { // isnt looping, but if needed can be fixed with creating a new instance of URLSerachParams
+      if (selectedPopularityQuery)
+        searchParams.set('popularity', selectedPopularityQuery)
+      if (selectedTagQuery)
+        searchParams.set('tag', selectedTagQuery)
+      setSearchParams(searchParams)
     }
-  }, [selectedPopularityQuery, setSearchParams]);
+    updateQueryParams()
+  }, [selectedPopularityQuery, selectedTagQuery, searchParams, setSearchParams])
 
   ///////////////////////////////////// handle tag on post /////////////////////////////////////
   const handleAddTagClick = (event, selectedPostId) => { // Goes to Post.js
@@ -48,7 +55,9 @@ function Home({ // Child of App.js
   };
 
   ///////////////////////////////////// handle filter tag /////////////////////////////////////
-  const handleTagClick = (tagName, tagId) => { };
+  const handleTagClick = (tagName, tagId) => { // Why in Home.js?
+    filterPostsByTag(tagName)
+  };
 
   ///////////////////////////////////// render components /////////////////////////////////////
   return (

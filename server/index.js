@@ -37,15 +37,16 @@ app.get('/user', cors(corsOptions), (req, res) => {
 
 ///////////////////////////////////// posts /////////////////////////////////////
 app.get('/posts', cors(corsOptions), (req, res) => {
+  let responsePosts = [...Posts]
   if (req.query.popularity) {
-    // TODO - implement popularity filter functionality here
     const popularity = Number(req.query.popularity);
-    const filteredPosts = Posts.filter(post => post.likes > popularity)
-    res.send({ Posts : filteredPosts });
-    return;
-    // End of TODO
+    responsePosts = responsePosts.filter(post => post.likes > popularity)
   }
-  res.send({ Posts });
+  if (req.query.tag) {
+    const tagName = req.query.tag
+    responsePosts = responsePosts.filter(post => Tags[tagName][post.id] === true)
+  }
+  res.send({ Posts: responsePosts });
 });
 
 // New Post submission

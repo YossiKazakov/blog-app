@@ -113,7 +113,7 @@ function App() {
   }, [getPosts, getTags, getUser]);
 
   const getFilteredPosts = (popularity, tag) => {
-    const url = popularity !== '' ? `popularity=${popularity}` : '';
+    const url = `${popularity ? `popularity=${popularity}` : ''}${tag ? `${popularity ? '&' : ''}tag=${tag}` : ''}`
     axios
       .get(`${baseURL}/posts?${url}`)
       .then((response) => {
@@ -251,6 +251,10 @@ function App() {
     setSelectedPopularityQuery(`${minLikeNum}`);
     getFilteredPosts(minLikeNum, selectedTagQuery);
   };
+  const filterPostsByTag = (tag) => {
+    setSelectedTagQuery(tag);
+    getFilteredPosts(selectedPopularityQuery, tag);
+  };
 
   ///////////////////////////////////// render components /////////////////////////////////////
   const renderToolBar = () => {
@@ -341,6 +345,8 @@ function App() {
                 handleAddTagOnPost={addTagOnPost}
                 selectedTagId={selectedTagId}
                 selectedPopularityQuery={selectedPopularityQuery}
+                selectedTagQuery={selectedTagQuery}
+                filterPostsByTag={filterPostsByTag}
                 userId={userId}
                 handleUpdateLikesAndDislikes={handleUpdateLikesAndDislikes}
               />
