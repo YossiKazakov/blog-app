@@ -82,15 +82,8 @@ function App() {
     axios
       .get(`${baseURL}/posts`)
       .then((response) => {
-        const posts = [...response.data['Posts']].map(post => {
-          const { likesCounter, dislikesCounter } = calculateLikesAndDislikesAmount(post.usersLikeOrDislike)
-          post.likes = likesCounter
-          post.dislikes = dislikesCounter
-          // console.log(`(get)${post.id} has ${likesCounter} likes and ${dislikesCounter} dislikes`);
-          return post
-        })
-        setAllPosts(posts);
-        setFilteredPosts(posts);
+        setAllPosts([...response.data['Posts']]);
+        setFilteredPosts([...response.data['Posts']]);
       })
       .catch((error) => {
         handleAlert(error.message, true, 'error');
@@ -218,37 +211,38 @@ function App() {
       )
       .then((response) => {
         // Local client state update
-        const { userId, status } = response.data
-        const updatedPosts = filteredPosts.map(post => {
-          if (post.id === postId) {
-            post.usersLikeOrDislike[userId] = status
-            const { likesCounter, dislikesCounter } = calculateLikesAndDislikesAmount(post.usersLikeOrDislike)
-            post.likes = likesCounter
-            post.dislikes = dislikesCounter
-            console.log(`(post)${post.id} has ${likesCounter} likes and ${dislikesCounter} dislikes`);
-          }
-          return post
-        })
-        setFilteredPosts(updatedPosts)
-        // setFilteredPosts(updatedPosts)
-        console.log(`post number ${postId} is now ${status + 'd'} by user ${userId}`);
+
+        const { userId, postToUpdate, message } = response.data
+        if (message) { // user already reacted to post
+          console.log(message);
+        }
+        else {
+          const updatedPosts = filteredPosts.map(post => {
+            if (post.id === postToUpdate.id) {
+              post = { ...postToUpdate }
+            }
+            return post
+          })
+          setFilteredPosts(updatedPosts)
+          console.log(`post number ${postId} is now ${status + 'd'} by user ${userId}`)
+        }
       })
       .catch(err => console.log);
   }
 
-  const calculateLikesAndDislikesAmount = (usersLikeOrDislikeObj) => {
-    let likesCounter = 0
-    let dislikesCounter = 0
-    Object.values(usersLikeOrDislikeObj).forEach(status => {
-      if (status === 'like') {
-        likesCounter++
-      }
-      if (status === 'dislike') {
-        dislikesCounter++
-      }
-    })
-    return { likesCounter, dislikesCounter }
-  }
+  // const calculateLikesAndDislikesAmount = (usersLikeOrDislikeObj) => {
+  //   let likesCounter = 0
+  //   let dislikesCounter = 0
+  //   Object.values(usersLikeOrDislikeObj).forEach(status => {
+  //     if (status === 'like') {
+  //       likesCounter++
+  //     }
+  //     if (status === 'dislike') {
+  //       dislikesCounter++
+  //     }
+  //   })
+  //   return { likesCounter, dislikesCounter }
+  // }
 
 
   ///////////////////////////////////// handle click events /////////////////////////////////////

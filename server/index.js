@@ -16,6 +16,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors());
+// app.use((req, res, next) => {
+//   console.log(Posts);
+//   next()
+// })
 
 const corsOptions = {
   origin: `${baseUrl.client}`,
@@ -72,7 +76,7 @@ app.post('/posts/:postId', cors(corsOptions), (req, res) => {
   }
 
   const { postId } = req.params
-  const { status } = req.body
+  const { status: newStatus } = req.body
 
 
   if (!postId) {
@@ -82,9 +86,33 @@ app.post('/posts/:postId', cors(corsOptions), (req, res) => {
 
   // Server Posts state update
   const index = Posts.findIndex((post) => post.id === postId)
-  Posts[index].usersLikeOrDislike[userId] = status
+  const postToUpdate = Posts[index]
+  if (userId in postToUpdate.usersLikeOrDislike) {
+    const oldStatus = postToUpdate.usersLikeOrDislike[userId]
+    if (oldStatus === 'like' && newStatus === 'dislike') {
+      postToUpdate.likes--
+      postToUpdate.dislikes++
+    }
+    else if (oldStatus === 'dislike' && newStatus === 'like') {
+      postToUpdate.likes++
+      postToUpdate.dislikes--
+    }
+    else {
+      return res.send({ userId, postToUpdate, message: `user ${userId} already reacted to post ${postId}` }).status(200).end();
+    }
+  }
+  else {
+    if (newStatus === 'like') {
+      postToUpdate.likes++
+    }
+    if (newStatus === 'dislike') {
+      postToUpdate.dislikes++
+    }
+  }
 
-  res.send({ userId, status }).status(200).end();
+  postToUpdate.usersLikeOrDislike[userId] = newStatus
+
+  res.send({ userId, postToUpdate }).status(200).end();
 
 });
 

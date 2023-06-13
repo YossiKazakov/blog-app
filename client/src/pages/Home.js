@@ -27,7 +27,7 @@ function Home({ // Child of App.js
 
   useEffect(() => {
     if (selectedPopularityQuery !== '') {
-      setSearchParams({ popularity: `${selectedPopularityQuery}` });
+      setSearchParams({ popularity: `${selectedPopularityQuery}` }); // sets the url
     }
   }, [selectedPopularityQuery, setSearchParams]);
 
