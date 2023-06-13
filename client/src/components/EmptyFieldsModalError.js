@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Dialog, DialogContent, Typography, DialogActions, Button } from '@mui/material';
 
 function EmptyFieldsModalError({ message, onCloseModal}) {

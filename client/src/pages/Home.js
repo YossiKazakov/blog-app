@@ -7,20 +7,20 @@ import { useSearchParams } from 'react-router-dom';
 
 function Home({ // Child of App.js
   Posts,
-  Tags, // Drilling to Post.js
-  tagsList, // Drilling to TagCloud and FloatingMenu.js
-  handleAddNewTag, // Drilling to TagCloud.js
+  Tags, 
+  tagsList, 
+  handleAddNewTag, 
   handleAddTagOnPost,
-  selectedTagId, // Drilling to Post.js and TagCloud.js
+  selectedTagId, 
   selectedPopularityQuery,
   selectedTagQuery,
   filterPostsByTag,
-  userId, // Drilling to Post.js
-  handleUpdateLikesAndDislikes // Drilling to Post.js
+  userId, 
+  handleUpdateLikesAndDislikes, 
+  disableTags,
+  showTagCloud
 }) {
-  // useEffect(() => {
-  //   console.log(Posts);
-  // })
+
   const [searchParams, setSearchParams] = useSearchParams();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -55,7 +55,7 @@ function Home({ // Child of App.js
   };
 
   ///////////////////////////////////// handle filter tag /////////////////////////////////////
-  const handleTagClick = (tagName, tagId) => { // Why in Home.js?
+  const handleTagClick = (tagName, tagId) => { // Why declared in Home.js and not in App.js?
     filterPostsByTag(tagName)
   };
 
@@ -78,7 +78,7 @@ function Home({ // Child of App.js
                 handleAddTagClick={handleAddTagClick} // Gets from App.js
                 handleTagClick={handleTagClick}
                 selectedTagId={selectedTagId}
-                isTagDisabled={false}
+                isTagDisabled={disableTags}
                 Tags={Tags}
                 userId={userId}
                 handleUpdateLikesAndDislikes={handleUpdateLikesAndDislikes}
@@ -91,12 +91,12 @@ function Home({ // Child of App.js
           </Typography>
         )}
       </List>
-      <TagsCloud
+      {showTagCloud && (<TagsCloud
         tagsList={tagsList}
         handleAddNewTag={handleAddNewTag}
         selectedTagId={selectedTagId}
         handleTagClick={handleTagClick}
-      />
+      />)}
       <FloatingMenu
         menuOptions={tagsList}
         anchorElement={anchorEl}

@@ -3,7 +3,7 @@ import { MenuItem, Menu } from '@mui/material';
 function FloatingMenu({ menuOptions, anchorElement, handleMenuClose }) {
   const open = Boolean(anchorElement); // false if null(no anchor), true otherwise
 
-  const handleClose = (selectedOption, optionId) => {
+  const handleClose = (selectedOption, optionId) => { // Why this id needed?
     const option = menuOptions.includes(selectedOption) ? selectedOption : '';
     handleMenuClose(option)
   };

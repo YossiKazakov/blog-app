@@ -6,7 +6,6 @@ function Tag({
   handleOnClick,
   selectedTagId = '',
   isDisabled,
-  color,
 }) {
   const dataTestId = postId ? `tag-${tagName}-${postId}` : `tag-${tagName}`;
   return (

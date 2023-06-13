@@ -1,39 +1,40 @@
-import { List, Typography } from '@mui/material';
-import { useEffect } from 'react';
-import Post from '../components/Post';
+import { useEffect, useState } from 'react';
+import Home from './Home';
 
-function MyRecommendedPosts({ Posts, Tags, getRecommendedPostsForMe, userId }) {
+function MyRecommendedPosts({
+  Posts,
+  Tags, 
+  tagsList, 
+  handleAddNewTag, 
+  handleAddTagOnPost,
+  selectedTagId, 
+  selectedPopularityQuery,
+  selectedTagQuery,
+  filterPostsByTag,
+  userId, 
+  handleUpdateLikesAndDislikes, 
+  getRecommendedPostsForMe
+}) {
+  const [recommendedPosts, setRecommendedPosts] = useState(Posts)
   useEffect(() => {
-    getRecommendedPostsForMe(Posts);
-    console.log(Posts);
-  }, [Posts, getRecommendedPostsForMe]);
+    setRecommendedPosts(getRecommendedPostsForMe())
+  }, [getRecommendedPostsForMe]);
 
-  return (
-    <div className='container'>
-      <List sx={{ width: '650px' }}>
-        {Posts.length !== 0 &&
-          Posts.map((post) => {
-            return (
-              <Post
-                key={`myRecommendedPosts-${post.id}`}
-                postId={post.id}
-                postTitle={post.title}
-                postContent={post.content}
-                isTagDisabled={true}
-                isAddTagBtn={false}
-                Tags={Tags}
-                userId={userId}
-              />
-            );
-          })}
-        {Posts.length === 0 && (
-          <Typography variant='h5' component='div' data-testid='emptyPostList'>
-            No Posts Were Found
-          </Typography>
-        )}
-      </List>
-    </div>
-  );
+  return <Home
+    Posts={recommendedPosts}
+    Tags={Tags}
+    tagsList={tagsList}
+    handleAddNewTag={handleAddNewTag}
+    handleAddTagOnPost={handleAddTagOnPost}
+    selectedTagId={selectedTagId}
+    selectedPopularityQuery={selectedPopularityQuery}
+    selectedTagQuery={selectedTagQuery}
+    filterPostsByTag={filterPostsByTag}
+    userId={userId}
+    handleUpdateLikesAndDislikes={handleUpdateLikesAndDislikes}
+    disableTags={true}
+    showTagCloud={false}
+  />
 }
 
 export default MyRecommendedPosts;

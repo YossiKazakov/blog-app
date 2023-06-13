@@ -13,7 +13,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import AddTagButton from './AddTagButton';
 import Tag from './Tag';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 function Post({ // Child of Home.js
   postId,
@@ -29,7 +29,7 @@ function Post({ // Child of Home.js
   isTagDisabled,
   Tags,
   userId,
-  handleUpdateLikesAndDislikes // Line 179 App.js
+  handleUpdateLikesAndDislikes 
 }) {
 
   const [isExpanded, setIsExpanded] = useState(true)

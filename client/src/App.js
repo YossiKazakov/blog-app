@@ -6,7 +6,6 @@ import Home from './pages/Home';
 import AddNewPost from './pages/AddNewPost';
 import MyRecommendedPosts from './pages/MyRecommendedPosts';
 import FloatingMenu from './components/FloatingMenu';
-import ModalError from './components/EmptyFieldsModalError';
 import {
   Typography,
   AppBar,
@@ -21,11 +20,6 @@ import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import RecommendIcon from '@mui/icons-material/Recommend';
 import HomeIcon from '@mui/icons-material/Home';
 function App() {
-
-  useEffect(() => {
-    console.log(`App.js re-rendered with ${allPosts.length} posts`);
-  })
-
   const baseURL = 'http://localhost:3080';
   const popularityOptions = [1, 2, 4, 10, 20];
 
@@ -108,17 +102,7 @@ function App() {
     getUser();
   }, [getPosts, getTags, getUser]);
 
-  const getFilteredPosts = (popularity, tag) => {
-    const url = `${popularity ? `popularity=${popularity}` : ''}${tag ? `${popularity ? '&' : ''}tag=${tag}` : ''}`
-    axios
-      .get(`${baseURL}/posts?${url}`)
-      .then((response) => {
-        setFilteredPosts([...response.data['Posts']]);
-      })
-      .catch((error) => {
-        handleAlert(error.message, true, 'error');
-      });
-  };
+  
 
   ///////////////////// RECOMMENDED POSTS LOGIC /////////////////////
   const getRecommendedPostsForMe = useCallback(() => {
@@ -138,12 +122,11 @@ function App() {
       for (const user of Object.keys(post.usersLikeOrDislike)) {
         if (usersThatShareInterest.has(user)) {
           posts.push(post)
+          break
         }
       }
     })
-    // console.log(Posts);
     return posts
-
   }, [allPosts, userId])
 
   ///////////////////// ADDING POST /////////////////////
@@ -230,7 +213,6 @@ function App() {
       )
       .then((response) => {
         // Local client state update
-
         const { userId, postToUpdate, message } = response.data
         if (message) { // user already reacted to post
           console.log(message);
@@ -278,6 +260,18 @@ function App() {
     getFilteredPosts(selectedPopularityQuery, tag);
   };
 
+  const getFilteredPosts = (popularity, tag) => {
+    const url = `${popularity ? `popularity=${popularity}` : ''}${tag ? `${popularity ? '&' : ''}tag=${tag}` : ''}`
+    axios
+      .get(`${baseURL}/posts?${url}`)
+      .then((response) => {
+        setFilteredPosts([...response.data['Posts']]);
+      })
+      .catch((error) => {
+        handleAlert(error.message, true, 'error');
+      });
+  };
+
   ///////////////////////////////////// utils /////////////////////////////////////////////
 
   // Called when a post is added. Since its navigating back home on submission, all states must be restareted
@@ -293,6 +287,7 @@ function App() {
     }
     setTagsList(tagsList);
   }
+  
 
   ///////////////////////////////////// render components /////////////////////////////////////
   const renderToolBar = () => {
@@ -369,10 +364,18 @@ function App() {
             path='/my-recommended-posts'
             element={
               <MyRecommendedPosts
-                Posts={[]}
+                Posts={filteredPosts}
                 Tags={tags}
-                getRecommendedPostsForMe={getRecommendedPostsForMe}
+                tagsList={tagsList}
+                handleAddNewTag={addNewTag}
+                handleAddTagOnPost={addTagOnPost}
+                selectedTagId={selectedTagId}
+                selectedPopularityQuery={selectedPopularityQuery}
+                selectedTagQuery={selectedTagQuery}
+                filterPostsByTag={filterPostsByTag}
                 userId={userId}
+                handleUpdateLikesAndDislikes={handleUpdateLikesAndDislikes}
+                getRecommendedPostsForMe={getRecommendedPostsForMe}
               />
             }
           />
@@ -395,6 +398,8 @@ function App() {
                 filterPostsByTag={filterPostsByTag}
                 userId={userId}
                 handleUpdateLikesAndDislikes={handleUpdateLikesAndDislikes}
+                disableTags={false}
+                showTagCloud={true}
               />
             }
           />
