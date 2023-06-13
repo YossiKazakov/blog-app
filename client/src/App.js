@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import AddNewPost from './pages/AddNewPost';
 import MyRecommendedPosts from './pages/MyRecommendedPosts';
 import FloatingMenu from './components/FloatingMenu';
+import ModalError from './components/EmptyFieldsModalError';
 import {
   Typography,
   AppBar,
@@ -22,7 +23,7 @@ import HomeIcon from '@mui/icons-material/Home';
 function App() {
 
   useEffect(() => {
-    console.log("App.js render");
+    console.log(`App.js re-rendered with ${allPosts.length} posts`);
   })
 
   const baseURL = 'http://localhost:3080';
@@ -36,8 +37,8 @@ function App() {
   const [allPosts, setAllPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
 
-  const [tags, setTags] = useState({});
-  const [tagsList, setTagsList] = useState([]); // Goes to the TagCloud
+  const [tags, setTags] = useState({}); // Actuall tags
+  const [tagsList, setTagsList] = useState([]); // Only names
   const [selectedTagId, setSelectedTagId] = useState('');
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -94,11 +95,7 @@ function App() {
       .get(`${baseURL}/tags`)
       .then((response) => {
         setTags({ ...response.data['Tags'] });
-        const tagsList = [];
-        for (const tagName in response.data['Tags']) {
-          tagsList.push(tagName);
-        }
-        setTagsList(tagsList);
+        updateTagList({ ...response.data['Tags'] })
       })
       .catch((error) => {
         handleAlert(error.message, true, 'error');
@@ -150,7 +147,7 @@ function App() {
   }, [allPosts, userId])
 
   ///////////////////// ADDING POST /////////////////////
-  const addPost = (id, title, content, selectedTag) => {
+  const addPost = (id, title, content, selectedTag = '') => {
     axios
       .post(
         `${baseURL}/posts`,
@@ -159,6 +156,7 @@ function App() {
             id,
             title,
             content,
+            selectedTag
           }
         },
         {
@@ -169,9 +167,13 @@ function App() {
         }
       )
       .then((response) => {
-        console.log(`new post have been added to the server :\n${response.data.newPost}`);
+        const { newPost, tags } = response.data
+        setAllPosts([...allPosts, newPost])
+        setTags(tags)
+        updateTagList(tags)
       });
   };
+
 
   ///////////////////// TAGS MANAGMENT /////////////////////
   const addNewTag = (tagName) => {
@@ -179,11 +181,7 @@ function App() {
       .post(`${baseURL}/tags/tagName/${tagName}`)
       .then((response) => {
         setTags({ ...response.data['Tags'] });
-        const tagsList = [];
-        for (const tagName in response.data['Tags']) {
-          tagsList.push(tagName);
-        }
-        setTagsList(tagsList);
+        updateTagList({ ...response.data['Tags'] })
         console.log(tagsList);
       })
       .catch((error) => {
@@ -261,11 +259,13 @@ function App() {
     filterPostsByPopularity(selectedOption);
   };
 
-  const handleHomeClick = () => {
+  const handleHomeClick = useCallback(() => {
     setFilteredPosts(allPosts);
     setSelectedPopularityQuery('');
     setSelectedTagId('');
-  };
+  }, [allPosts])
+
+
 
   ///////////////////////////////////// filters /////////////////////////////////////
   const filterPostsByPopularity = (minLikeNum = 1) => {
@@ -277,6 +277,22 @@ function App() {
     setSelectedTagId(tag)
     getFilteredPosts(selectedPopularityQuery, tag);
   };
+
+  ///////////////////////////////////// utils /////////////////////////////////////////////
+
+  // Called when a post is added. Since its navigating back home on submission, all states must be restareted
+  useEffect(() => {
+    handleHomeClick()
+  }, [allPosts, handleHomeClick])
+
+  // Reusable code for setting the tag (names) list
+  const updateTagList = (tags) => {
+    const tagsList = [];
+    for (const tagName in tags) {
+      tagsList.push(tagName);
+    }
+    setTagsList(tagsList);
+  }
 
   ///////////////////////////////////// render components /////////////////////////////////////
   const renderToolBar = () => {

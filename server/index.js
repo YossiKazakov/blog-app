@@ -56,16 +56,19 @@ app.post('/posts', cors(corsOptions), (req, res) => {
     res.status(403).end();
     return;
   }
-  const { id, title, content } = req.body.post
+  const { id, title, content, selectedTag } = req.body.post
   // console.log(req.body);
 
   if (!id || !title || !content) {
     res.status(400).end();
     return;
   }
-  const newPost = { id, title, content, userId, usersLikeOrDislike: {} }
+  const newPost = { id, title, content, userId, usersLikeOrDislike: {}, likes: 0, dislikes: 0 }
   Posts.push(newPost)
-  res.send({ newPost }).status(200).end();
+  if (selectedTag) {
+    Tags[selectedTag] = { ...Tags[selectedTag], [id]: true }
+  }
+  res.send({ newPost, tags: Tags }).status(200).end();
 
 });
 

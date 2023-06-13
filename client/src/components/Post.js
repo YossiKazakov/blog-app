@@ -31,12 +31,7 @@ function Post({ // Child of Home.js
   userId,
   handleUpdateLikesAndDislikes // Line 179 App.js
 }) {
-  useEffect(() => {
-    console.log("==start==");
-    console.log(postId);
-    console.log(postUsersLikeOrDislike);
-    console.log("==finis==");
-  })
+
   const getTagsByPostId = (postID) => {
     const tagsArr = [];
     for (const tagName in Tags) {

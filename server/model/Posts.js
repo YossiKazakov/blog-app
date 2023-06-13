@@ -5,7 +5,7 @@ const Posts = [
         id: "11",
         title: 'Example Title 1',
         content: 'Example content 1',
-        userId: "11",   
+        userId: "11",
         usersLikeOrDislike: {}, // An object that for each user that reacted to this post stores the user id
         likes: 0,               // as key and the reaction ('like'/'dislike') as value
         dislikes: 0

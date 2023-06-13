@@ -11,18 +11,56 @@ import {
   Button,
   Select,
 } from '@mui/material';
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Form, useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import EmptyFieldsModalError from '../components/EmptyFieldsModalError';
 
 function AddNewPost({ handleAddPost }) {
   const tagsList = ['Server', 'Frontend', 'Security', 'Analytics', 'Mobile']; // mock tags data
+  const [customTag, setCustomTag] = useState('')
 
   const navigate = useNavigate();
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
+  const [showModal, setShowModal] = useState(false)
+  const [modalMessage, setModalMessage] = useState('')
+
+  const handleSubmit = () => {
+    let message = '';
+    switch (true) {
+      case !title && !content:
+        message = 'Please provide title and content';
+        break;
+      case !title:
+        message = 'Please add title';
+        break;
+      case !content:
+        message = 'Please add content';
+        break;
+      case title.length > 80:
+        message = 'Your title is too long (MAX: 80 characters)';
+        break;
+      default:
+        if (selectedTag === 'custom') {
+          handleAddPost(uuidv4(), title, content, customTag);
+        } else {
+          handleAddPost(uuidv4(), title, content, selectedTag);
+        }
+        navigate('/');
+        return;
+    }
+
+    setModalMessage(message);
+    setShowModal(true);
+  }
+
+
+  const handleCloseModal = () => {
+    setShowModal(false)
+  }
 
   return (
     <div className='container'>
@@ -78,7 +116,7 @@ function AddNewPost({ handleAddPost }) {
             }}
             data-testid='addNewPost-postContent'
           />
-          <FormControl sx={{ m: 1, minWidth: 'max-content', width: '200px' }}>
+          <FormControl sx={{ m: 1, minWidth: 'max-content', width: '200px', display: 'flex' }}>
             <InputLabel
               id='select-tag-label'
               data-testid='addNewPost-postTagLabel'
@@ -104,7 +142,21 @@ function AddNewPost({ handleAddPost }) {
                   {option}
                 </MenuItem>
               ))}
+              <MenuItem value='custom'>Other</MenuItem>
             </Select>
+            {selectedTag === 'custom' && (
+              <TextField
+                sx={{ marginTop: '10px' }}
+                id='addNewPost-customTagInput'
+                label='New tag'
+                fullWidth
+                value={customTag}
+                onChange={(event) => {
+                  setCustomTag(event.target.value);
+                }}
+                data-testid='addNewPost-customTag'
+              />
+            )}
           </FormControl>
         </CardContent>
         <CardActions>
@@ -112,12 +164,17 @@ function AddNewPost({ handleAddPost }) {
             variant='contained'
             size='large'
             data-testid='addNewPost-submitBtn'
-            onClick={() => { handleAddPost(uuidv4(), title, content); navigate("/") }}
+            onClick={handleSubmit}
           >
             submit
           </Button>
         </CardActions>
       </Card>
+      {
+        showModal && (
+          <EmptyFieldsModalError message={modalMessage} onCloseModal={handleCloseModal} />
+        )
+      }
     </div>
   );
 }
