@@ -13,6 +13,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import AddTagButton from './AddTagButton';
 import Tag from './Tag';
+import { useEffect } from 'react';
 
 function Post({ // Child of Home.js
   postId,
@@ -30,7 +31,12 @@ function Post({ // Child of Home.js
   userId,
   handleUpdateLikesAndDislikes // Line 179 App.js
 }) {
-
+  useEffect(() => {
+    console.log("==start==");
+    console.log(postId);
+    console.log(postUsersLikeOrDislike);
+    console.log("==finis==");
+  })
   const getTagsByPostId = (postID) => {
     const tagsArr = [];
     for (const tagName in Tags) {

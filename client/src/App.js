@@ -19,7 +19,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import RecommendIcon from '@mui/icons-material/Recommend';
 import HomeIcon from '@mui/icons-material/Home';
-
 function App() {
 
   useEffect(() => {
@@ -124,9 +123,31 @@ function App() {
       });
   };
 
-  const getRecommendedPostsForMe = () => {
-    // TODO - add the recommended-posts-for-me functionality here
-  };
+  ///////////////////// RECOMMENDED POSTS LOGIC /////////////////////
+  const getRecommendedPostsForMe = useCallback(() => {
+    const posts = []
+    const postsThatUserDidntReactTo = allPosts.filter(post => !(userId in post.usersLikeOrDislike))
+    const usersThatShareInterest = new Set()
+    allPosts.forEach(post => {
+      if (post.usersLikeOrDislike[userId] === 'like') {
+        Object.entries(post.usersLikeOrDislike).forEach(([id, reaction]) => {
+          if (id !== userId && reaction === 'like') {
+            usersThatShareInterest.add(id)
+          }
+        })
+      }
+    })
+    postsThatUserDidntReactTo.forEach(post => {
+      for (const user of Object.keys(post.usersLikeOrDislike)) {
+        if (usersThatShareInterest.has(user)) {
+          posts.push(post)
+        }
+      }
+    })
+    // console.log(Posts);
+    return posts
+
+  }, [allPosts, userId])
 
   ///////////////////// ADDING POST /////////////////////
   const addPost = (id, title, content, selectedTag) => {
@@ -278,6 +299,14 @@ function App() {
               data-testid='addNewPostBtn'
             >
               Add a New Post
+            </Button>
+            <Button
+              href='/my-recommended-posts'
+              size='large'
+              startIcon={<RecommendIcon />}
+              data-testid='myRecommendedPostsBtn'
+            >
+              Explore more posts
             </Button>
           </ButtonGroup>
           <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>

@@ -4,8 +4,9 @@ import Post from '../components/Post';
 
 function MyRecommendedPosts({ Posts, Tags, getRecommendedPostsForMe, userId }) {
   useEffect(() => {
-    getRecommendedPostsForMe();
-  }, []);
+    getRecommendedPostsForMe(Posts);
+    console.log(Posts);
+  }, [Posts, getRecommendedPostsForMe]);
 
   return (
     <div className='container'>
