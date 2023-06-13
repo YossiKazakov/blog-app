@@ -230,21 +230,6 @@ function App() {
       .catch(err => console.log);
   }
 
-  // const calculateLikesAndDislikesAmount = (usersLikeOrDislikeObj) => {
-  //   let likesCounter = 0
-  //   let dislikesCounter = 0
-  //   Object.values(usersLikeOrDislikeObj).forEach(status => {
-  //     if (status === 'like') {
-  //       likesCounter++
-  //     }
-  //     if (status === 'dislike') {
-  //       dislikesCounter++
-  //     }
-  //   })
-  //   return { likesCounter, dislikesCounter }
-  // }
-
-
   ///////////////////////////////////// handle click events /////////////////////////////////////
   const handlePopularityClick = (event) => {
     setAnchorEl(event.currentTarget);

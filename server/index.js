@@ -40,7 +40,8 @@ app.get('/posts', cors(corsOptions), (req, res) => {
   if (req.query.popularity) {
     // TODO - implement popularity filter functionality here
     const popularity = Number(req.query.popularity);
-    res.send({ Posts });
+    const filteredPosts = Posts.filter(post => post.likes > popularity)
+    res.send({ Posts : filteredPosts });
     return;
     // End of TODO
   }
