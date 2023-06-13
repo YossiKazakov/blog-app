@@ -73,13 +73,3 @@ When you're ready to submit your exam:
 ### Bonus:
 
 1. Bonus - provide an ellipsis solution for content longer than 200 characters with a read more button. Read more button should have `data-testid=postContent-readMoreButton`
-
-## App.js : Popularity
-
-selectedPopularityQuery state
-
-onClick popularity menu -> sets anchor for the floating menu on it
-onMenuClose -> sets anchor back to null and calls filterPostsByPopularity(selectedNumber)
--> sets the query state to selectedNumber (string) and calls getFilteredPosts(minLikeNum...)
--> creates an url and send GET request to server with posts/${url}
--> as response, gets the filtered posts from the server and sets the filteredPost state

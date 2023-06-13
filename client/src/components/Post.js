@@ -13,7 +13,7 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import AddTagButton from './AddTagButton';
 import Tag from './Tag';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function Post({ // Child of Home.js
   postId,
@@ -31,6 +31,12 @@ function Post({ // Child of Home.js
   userId,
   handleUpdateLikesAndDislikes // Line 179 App.js
 }) {
+
+  const [isExpanded, setIsExpanded] = useState(true)
+  const maxLen = 200
+  const toggleText = () => {
+    setIsExpanded(!isExpanded)
+  }
 
   const getTagsByPostId = (postID) => {
     const tagsArr = [];
@@ -64,10 +70,24 @@ function Post({ // Child of Home.js
             <Typography
               variant='body1'
               gutterBottom
-              data-testid={`postContent-${postId}`}
-            >
-              {postContent}
+              data-testid={`postContent-${postId}`}>
+              {postContent.length > 200 && !isExpanded
+                ? `${postContent.slice(0, maxLen)} `
+                : postContent}
+              {postContent.length > 200 && (
+                <Typography
+                  variant='body1'
+                  gutterBottom
+                  data-testid='postContent-readMoreButton'
+                  component='span'
+                  onClick={toggleText}
+                  sx={{ color: 'blue', cursor: 'pointer' }}
+                >
+                  {isExpanded ? ' show less' : '...read more'}
+                </Typography>
+              )}
             </Typography>
+
           </CardContent>
         </ListItemButton>
         <CardActions>
