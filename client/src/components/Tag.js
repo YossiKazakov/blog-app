@@ -6,6 +6,7 @@ function Tag({
   handleOnClick,
   selectedTagId = '',
   isDisabled,
+  color,
 }) {
   const dataTestId = postId ? `tag-${tagName}-${postId}` : `tag-${tagName}`;
   return (
@@ -17,7 +18,7 @@ function Tag({
       className='Badge'
       disabled={isDisabled}
       onClick={() => handleOnClick(tagName, dataTestId)}
-      color='default'
+      color={tagName === selectedTagId ? 'primary' : 'default'}
       data-testid={dataTestId}
     >
       {tagName}

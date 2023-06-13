@@ -253,6 +253,7 @@ function App() {
   };
   const filterPostsByTag = (tag) => {
     setSelectedTagQuery(tag);
+    setSelectedTagId(tag)
     getFilteredPosts(selectedPopularityQuery, tag);
   };
 
