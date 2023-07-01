@@ -320,8 +320,8 @@ function App() {
               Explore more posts
             </Button>
           </ButtonGroup>
-          <Typography variant='h6' component='div' sx={{ flexGrow: 1 }}>
-            Enter 2023 Blog Exam
+          <Typography variant='h6' component='div' sx={{ flexGrow: 1 }} color='secondary'>
+            MY BLOG APPLICATION
           </Typography>
           <Button
             className={
