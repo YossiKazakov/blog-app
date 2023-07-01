@@ -3,16 +3,16 @@ import Home from './Home';
 
 function MyRecommendedPosts({
   Posts,
-  Tags, 
-  tagsList, 
-  handleAddNewTag, 
+  Tags,
+  tagsList,
+  handleAddNewTag,
   handleAddTagOnPost,
-  selectedTagId, 
+  selectedTagId,
   selectedPopularityQuery,
   selectedTagQuery,
   filterPostsByTag,
-  userId, 
-  handleUpdateLikesAndDislikes, 
+  userId,
+  handleUpdateLikesAndDislikes,
   getRecommendedPostsForMe
 }) {
   const [recommendedPosts, setRecommendedPosts] = useState(Posts)
